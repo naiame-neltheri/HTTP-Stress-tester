@@ -1,0 +1,54 @@
+#!/bin/python3
+
+import urllib3, time
+import requests, sys
+import argparse, threading
+
+def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
+	start = time.time()
+	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
+	try:
+		if ssl_verify:
+			r = requests.get(url, headers = header, timeout = timeout)
+		else:
+			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+			r = requests.get(url, verify = False, headers = header, timeout = timeout)
+		if r.status_code != 200:
+			print("[-] Unable to connect to server")
+			return False
+		print(f"[+] Thread {id} : Consumed time for HTTP request {float(time.time() - start):.2f} second")
+	except requests.exceptions.MissingSchema:
+		print("[-] Error schema is not supplied, please provide http or https schema to URL")
+		return False
+	except requests.exceptions.ReadTimeout:
+		print(f"[*] Timeout occured on {url} with timeout set to : {timeout} sec")
+	except requests.exceptions.SSLError as err:
+		print(f"[!] SSL error occured use -k option to skip it")
+		print(err)
+	return True
+
+if "__main__" in __name__:
+	parser = argparse.ArgumentParser(description = "HTTP Load tester by Naiame Nel'theri")
+	parser.add_argument("max", help = "Number of requests to send", type = int)
+	parser.add_argument("url", help = "URL for web service", type = str)
+	parser.add_argument("-t", dest = "thread", default = [1], nargs = 1, help = "Thread count, default is 1", type = int)
+	parser.add_argument("-H", dest = "header", default = None, nargs = 1, help = "Custom header, ex: Authorization: Bearer test", type = str)
+	parser.add_argument("-T", dest = "timeout", default = [30], nargs = 1, help = "Set timeout for warning message", type = float)
+	parser.add_argument("-k", dest = "ssl_verify", default = True, action = "store_false", help = "Set SSL verification to false")
+
+	args = parser.parse_args()
+	print(args)
+	header = None
+	if args.header:
+		header = args.header[0]
+	threads = []
+	cnt = 0
+
+	while cnt < args.max:
+		for i in range(0, args.thread[0]):
+			if cnt > args.max:
+				break
+			t = threading.Thread(target = initiate_full_con, args=(args.url, args.timeout[0], header, i, args.ssl_verify,))
+			t.start()
+			threads.append(t)
+			cnt += 1
