@@ -4,6 +4,8 @@ import urllib3, time
 import requests, sys
 import argparse, threading
 
+consumedLst = []
+
 def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 	start = time.time()
 	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
@@ -13,19 +15,22 @@ def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 		else:
 			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 			r = requests.get(url, verify = False, headers = header, timeout = timeout)
+		consumedLst.append(float(time.time() - start))
 		if r.status_code != 200:
-			print("[-] Unable to connect to server")
-			return False
-		print(f"[+] Thread {id} : Consumed time for HTTP request {float(time.time() - start):.2f} second")
+			# print(f"[-] Invalid HTTP status code received : {r.status_code}")
+			return f"[-] Invalid HTTP status code received : {r.status_code}"
+		# print(f"[+] Thread {id} : Consumed time for HTTP request {float(time.time() - start):.2f} second")
+		return True
 	except requests.exceptions.MissingSchema:
 		print("[-] Error schema is not supplied, please provide http or https schema to URL")
 		return False
 	except requests.exceptions.ReadTimeout:
 		print(f"[*] Timeout occured on {url} with timeout set to : {timeout} sec")
+		return False
 	except requests.exceptions.SSLError as err:
 		print(f"[!] SSL error occured use -k option to skip it")
 		print(err)
-	return True
+		return False
 
 if "__main__" in __name__:
 	parser = argparse.ArgumentParser(description = "HTTP Load tester by Naiame Nel'theri")
@@ -38,12 +43,13 @@ if "__main__" in __name__:
 
 	args = parser.parse_args()
 	print(args)
+
 	header = None
 	if args.header:
 		header = args.header[0]
+
 	threads = []
 	cnt = 0
-
 	while cnt < args.max:
 		for i in range(0, args.thread[0]):
 			if cnt > args.max:
@@ -52,3 +58,9 @@ if "__main__" in __name__:
 			t.start()
 			threads.append(t)
 			cnt += 1
+			print(f"\r[+] Total of {cnt} requests sent", end="", flush = True)
+
+	for thread in threads:
+		thread.join()
+	avgConsumedTime = sum(consumedLst) / len(consumedLst)
+	print(f"\n[+] Average Time : {avgConsumedTime:.2f} second"))
