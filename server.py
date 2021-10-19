@@ -1,24 +1,65 @@
-import socket # for socket
-import sys
+from gevent import monkey
  
-try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print ("Socket successfully created")
-except socket.error as err:
-    print ("socket creation failed with error %s" %(err))
  
-# default port for socket
-port = 80
  
-try:
-    host_ip = socket.gethostbyname('www.google.com')
-except socket.gaierror:
+monkey.patch_all()
  
-    # this means could not resolve the host
-    print ("there was an error resolving the host")
-    sys.exit()
  
-# connecting to the server
-s.connect((host_ip, port))
  
-print ("the socket has successfully connected to google")
+from flask import Flask, render_template, session, request
+ 
+from flask.ext.socketio import SocketIO, emit, join_room
+ 
+ 
+ 
+app = Flask(__name__)
+ 
+app.debug = True
+ 
+app.config['SECRET_KEY'] = 'nuttertools'
+ 
+socketio = SocketIO(app)
+ 
+ 
+ 
+ 
+ 
+@app.route('/')
+ 
+def chat():
+ 
+    return render_template('chat.html')
+ 
+ 
+ 
+@app.route('/login')
+ 
+def login():
+ 
+    return render_template('login.html')
+ 
+ 
+ 
+ 
+ 
+@socketio.on('message', namespace='/chat')
+ 
+def chat_message(message):
+ 
+    emit('message', {'data': message['data']}, broadcast = True)
+ 
+ 
+ 
+@socketio.on('connect', namespace='/chat')
+ 
+def test_connect():
+ 
+    emit('my response', {'data': 'Connected', 'count': 0})
+ 
+ 
+ 
+ 
+ 
+if __name__ == '__main__':
+ 
+    socketio.run(app)
