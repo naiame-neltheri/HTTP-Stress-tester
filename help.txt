@@ -1,0 +1,4 @@
+sudo apt-get install python-dev build-essential
+sudo apt-get install python-pip
+sudo pip install virtualenv
+sudo pip install gunicorn==18.0
