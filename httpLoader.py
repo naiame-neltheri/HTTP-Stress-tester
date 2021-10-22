@@ -6,6 +6,7 @@ import argparse, threading
 
 consumedLst = []
 
+# this function visits given url, if error happens it will return a message.
 def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 	start = time.time()
 	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
@@ -13,8 +14,8 @@ def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 		if ssl_verify:
 			r = requests.get(url, headers = header, timeout = timeout)
 		else:
-			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-			r = requests.get(url, verify = False, headers = header, timeout = timeout)
+			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Ignore ssl verification  
+			r = requests.get(url, verify = False, headers = header, timeout = timeout) # GET request triggers here
 		consumedLst.append(float(time.time() - start))
 		if r.status_code != 200:
 			# print(f"[-] Invalid HTTP status code received : {r.status_code}")
