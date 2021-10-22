@@ -1,0 +1,25 @@
+Horrid! Worst functions known to man:
+	gets()
+	strcat()
+	strcpy()
+	sprintf()
+
+Better, but often bounds is based on size of input:
+	fgets()
+	snprintf()
+	strncpy()
+	strncat()
+
+To easily trusted:
+	strlen() needs null terminator! 
+
+Frisky functions if not watched:
+	fscanf()
+	getopt()
+	getpass()
+	realpath()
+	scanf()
+	streadd()
+	strecpy()
+	strtrns()
+	vsprintf()
