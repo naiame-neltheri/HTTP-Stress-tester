@@ -1,5 +1,10 @@
 #!/bin/python3
 
+##############################################################
+#  This tool only used for testing server and education      #
+#  by Naiame Nel'theri                                       #
+##############################################################
+
 import urllib3, time
 import requests, sys
 import argparse, threading
@@ -19,7 +24,7 @@ def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 		consumedLst.append(float(time.time() - start))
 		if r.status_code != 200:
 			# print(f"[-] Invalid HTTP status code received : {r.status_code}")
-			return f"[-] Invalid HTTP status code received : {r.status_code}"
+			return f"[-] Invalid HTTP status code received : {r.status_code}"     # if this happens something wrong with the site
 		# print(f"[+] Thread {id} : Consumed time for HTTP request {float(time.time() - start):.2f} second")
 		return True
 	except requests.exceptions.MissingSchema:
