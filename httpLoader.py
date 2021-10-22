@@ -11,14 +11,14 @@ def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
 	try:
 		if ssl_verify:
-			r = requests.get(url, headers = header, timeout = timeout)
+			r = requests.get(url, headers = header, timeout = timeout)                  # GET request triggers here with ssl verification
 		else:
 			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-			r = requests.get(url, verify = False, headers = header, timeout = timeout)
+			r = requests.get(url, verify = False, headers = header, timeout = timeout)  # GET request triggers here without check ssl            
 		consumedLst.append(float(time.time() - start))
 		if r.status_code != 200:
 			# print(f"[-] Invalid HTTP status code received : {r.status_code}")
-			return f"[-] Invalid HTTP status code received : {r.status_code}"
+			return f"[-] Invalid HTTP status code received : {r.status_code}"                   # if this happens something wrong with the site
 		# print(f"[+] Thread {id} : Consumed time for HTTP request {float(time.time() - start):.2f} second")
 		return True
 	except requests.exceptions.MissingSchema:
