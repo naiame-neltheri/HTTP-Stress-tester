@@ -12,10 +12,10 @@ def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
 	try:
 		if ssl_verify:
-			r = requests.get(url, headers = header, timeout = timeout)
+			r = requests.get(url, headers = header, timeout = timeout)                 # GET request triggers here with ssl verification
 		else:
-			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Ignore ssl verification  
-			r = requests.get(url, verify = False, headers = header, timeout = timeout) # GET request triggers here
+			urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
+			r = requests.get(url, verify = False, headers = header, timeout = timeout) # GET request triggers here without check ssl
 		consumedLst.append(float(time.time() - start))
 		if r.status_code != 200:
 			# print(f"[-] Invalid HTTP status code received : {r.status_code}")
@@ -50,7 +50,7 @@ if "__main__" in __name__:
 		header = args.header[0]
 
 	threads = []
-	cnt = 0
+	cnt = 0 # counter
 	while cnt < args.max:
 		for i in range(0, args.thread[0]):
 			if cnt > args.max:
