@@ -1,5 +1,10 @@
 #!/bin/python3
 
+##############################################################
+#  This tool only used for testing server and education      #
+#  by Naiame Nel'theri                                       #
+##############################################################
+
 import urllib3, time
 import requests, sys
 import argparse, threading
