@@ -63,4 +63,4 @@ if "__main__" in __name__:
 	for thread in threads:
 		thread.join()
 	avgConsumedTime = sum(consumedLst) / len(consumedLst)
-	print(f"\n[+] Average Time : {avgConsumedTime:.2f} second"))
+	print(f"\n[+] Average Time : {avgConsumedTime:.2f} second")
