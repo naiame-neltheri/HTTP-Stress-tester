@@ -13,7 +13,10 @@ consumedLst = []
 
 def initiate_full_con(url, timeout, raw_header, id, ssl_verify):
 	start = time.time()
-	header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
+	if raw_header:
+		header = {raw_header.split(":")[0] : raw_header.split(":")[1].strip()}
+	else:
+		header = None
 	try:
 		if ssl_verify:
 			r = requests.get(url, headers = header, timeout = timeout)                  # GET request triggers here with ssl verification
@@ -52,7 +55,6 @@ if "__main__" in __name__:
 	header = None
 	if args.header:
 		header = args.header[0]
-
 	threads = []
 	cnt = 0
 	while cnt < args.max:
@@ -65,7 +67,8 @@ if "__main__" in __name__:
 			cnt += 1
 			print(f"\r[+] Total of {cnt} requests sent", end="", flush = True)
 
-	for thread in threads:
-		thread.join()
+		for thread in threads:
+			thread.join()
+
 	avgConsumedTime = sum(consumedLst) / len(consumedLst)
 	print(f"\n[+] Average Time : {avgConsumedTime:.2f} second")
