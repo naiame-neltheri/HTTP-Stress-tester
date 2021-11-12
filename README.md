@@ -1,5 +1,5 @@
-# custom-tools
-Custom tools made by myself
+# HTTP Stress tester
+HTTP Stress tester written on `python 3` with threading
 
 ## HTTP Load tester
 This tool is written on python using threads. The tools itself only firest HTTP request for specified URL until the maximum HTTP request is reached. You can define thread numbers with options.
