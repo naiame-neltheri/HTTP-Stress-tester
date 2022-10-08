@@ -8,7 +8,7 @@ import ctypes
 libgcc_s = ctypes.CDLL('libgcc_s.so.1')
 
 consumedLst = []
-site_root = "https://website.com"
+site_root = "https://loader-website.com"
 apiGatewayLive = "##########"
 # apiGatewayLive = "##########"
 timeout = 10
@@ -26,6 +26,8 @@ def upload_to_s3(id, fileUrl, fileName, ssl_verify, connection_pool):
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             r = requests.post(apiGatewayLive, verify = False, timeout = timeout,json=payload)      
 
+        # consumedLst.append(float(time.time() - start))
+
         if r.status_code == 200:
             connection_object = connection_pool.get_connection()
             if connection_object.is_connected():
@@ -34,6 +36,14 @@ def upload_to_s3(id, fileUrl, fileName, ssl_verify, connection_pool):
                 cursor.close()
                 connection_object.commit()
                 connection_object.close()
+                print(f"\n[+] Uploaded : {id}")
+        else:
+            print(payload)
+            f = open("faileds.txt", "a")
+            f.write(str(id) + ' - ' + r.reason + "\n")
+            f.close()
+            print(r)
+            print(f"\n[-] Failed : {id}, Reason : " + r.reason + ' , ' + str(r.status_code) + "\n")
             
     except requests.exceptions.MissingSchema:
         print("[-] Error schema is not supplied, please provide http or https schema to URL")
@@ -89,6 +99,7 @@ if "__main__" in __name__:
                 id = records[cnt][0]
                 fileUrl = site_root+records[cnt][1]
                 fileName = records[cnt][2]
+                # t = threading.Thread(target = upload_to_s3, args=(id, fileUrl, fileName, False, connection_pool[pool_counter],))
                 t = threading.Thread(target = upload_to_s3, args=(id, fileUrl, fileName, True, connection_pool[pool_counter],))
                 t.start()
                 threads.append(t)
@@ -103,3 +114,6 @@ if "__main__" in __name__:
 
             for thread in threads:
                 thread.join()
+
+        avgConsumedTime = sum(consumedLst) / len(consumedLst)
+        print(f"\n[+] Average Time : {avgConsumedTime:.2f} second")
