@@ -5,7 +5,7 @@ from itertools import count
 import time
 
 def plot():
-    fig, (ax1, ax2) = plt.subplots(2)
+    fig, (ax1, ax2, ax3) = plt.subplots(2)
 
     y1 = []
     y2 = []
@@ -30,6 +30,8 @@ def plot():
         fig.subplots_adjust(hspace=0.4)
         ax1.set(ylabel="% Usage")
         ax2.set(ylabel="Memory in GB", xlabel="time")
+            # Disk Space
+        ax3.set("Disk Space")
 		
 		
         ax1.plot(x,y1)
@@ -38,7 +40,8 @@ def plot():
                  xycoords=('axes fraction', 'data'), textcoords='offset points')
         ax2.annotate('%0.2f' % y2[-1], xy=(1, y2[-1]), xytext=(8, 0),
                  xycoords=('axes fraction', 'data'), textcoords='offset points')
-    
+        ax3.annotate('%0.2f' % y2[-1], xy=(1, y2[-1]), xytext=(8, 0),
+                 xycoords=('axes fraction', 'data'), textcoords='offset points')
 	
 	ani = FuncAnimation(fig, animate, interval=(1000))
     plt.show()
