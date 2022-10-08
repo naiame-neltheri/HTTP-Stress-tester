@@ -38,10 +38,10 @@ class Loader:
 
 if __name__ == "__main__":
     with Loader("Loading context manager..."):
-        for i in range(10):
-            sleep(0.25)
+        for i in range(100):
+            sleep(0.35)
 
     loader = Loader("Loading object...", "!", 0.05).start()
-    for i in range(10):
-        sleep(0.25)
+    for i in range(100):
+        sleep(0.35)
     loader.stop()
