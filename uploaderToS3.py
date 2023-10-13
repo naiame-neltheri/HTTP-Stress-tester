@@ -37,6 +37,14 @@ def upload_to_s3(id, fileUrl, fileName, ssl_verify, connection_pool):
                 connection_object.commit()
                 connection_object.close()
                 # print(f"\n[+] Uploaded : {id}")
+        else:
+            print(payload)
+            f = open("faileds.txt", "a")
+            f.write(str(id) + ' - ' + r.reason + "\n")
+            f.close()
+            print(r)
+            print(f"\n[-] Failed : {id}, Reason : " + r.reason + ' , ' + str(r.status_code) + "\n")
+    
     except Exception as err:
         print("Something wrong: \n")
         print(payload)
